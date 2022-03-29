@@ -6,6 +6,13 @@
 
 char *getArgs(int argc, char **argv)
 {
+    char *output = malloc(sizeof(char) * FILE_NAME_MAX_SIZE);
+    if (!output)
+    {
+        perror("Falha ao alocar memória para string");
+        exit(EXIT_FAILURE);
+    }
+
     if (argc > 3)
     {
         fprintf(stderr, "Número de argumentos inválidos.\n");
@@ -15,14 +22,17 @@ char *getArgs(int argc, char **argv)
     if (!strcmp(argv[1], "-o"))
     {
         if (!access(argv[2], F_OK))
-            return argv[2];
+            strncpy(output, argv[2], FILE_NAME_MAX_SIZE);
         else
         {
             fprintf(stderr, "Arquivo %s não encontrado.\n", argv[2]);
             exit(EXIT_FAILURE);
         }
     }
-    return "stdout";
+    else
+        strncpy(output, argv[2], FILE_NAME_MAX_SIZE);
+
+    return output;
 }
 
 FUNCTION *readFunction(void)

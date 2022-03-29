@@ -4,7 +4,7 @@
 
 int main(int argc, char **argv)
 {
-    //char *output = getArgs(argc, argv);
+    char *output = getArgs(argc, argv);
     FUNCTION *input_func;
 
     do
@@ -12,11 +12,12 @@ int main(int argc, char **argv)
         input_func = readFunction();
         printf("%s\n", input_func->expression);
 
-        //Free da function
+        // Free da function
         free(input_func->initial_aps);
         free(input_func);
     } while (getc(stdin) != EOF);
-    //printf("%s\n", output);
+<<<<<<< HEAD
+    // printf("%s\n", output);
 
     // cabeçalho
     printf("Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
@@ -44,4 +45,7 @@ int main(int argc, char **argv)
     printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e\n", TderivadasEG, TderivadasLU, TderivadasGS);
     printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e\n", TslEG, TslLU, TslGS);
     */
+=======
+    printf("%s\n", input_func->expression);
+>>>>>>> 5eb8272 (resolvido erro do getArgs)
 }
