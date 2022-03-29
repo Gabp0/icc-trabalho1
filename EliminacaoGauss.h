@@ -1,14 +1,8 @@
-#ifndef __ELIM_GAUSS__
-#define __ELIM_GAUSS__
+#ifndef __HESS_GAUSS__
+#define __HESS_GAUSS__
 
 #include "SistLinear.h"
 
-void pivot(SistLinear_t *SL, int i);
-
-void retrossubs(SistLinear_t *SL, double *X);
-
-void triang(SistLinear_t *SL);
-
-void eliminacaoGauss(SistLinear_t *SL, double *X);
+void hessianGaussElimination(double **H_x, double *X, double *g_f, int n);
 
 #endif
