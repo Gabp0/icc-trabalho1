@@ -40,8 +40,8 @@ FUNCTION *readFunction(void)
         exit(EXIT_FAILURE);
     }
 
-    fscanf(stdin, "%d\n%s\n%lf\n%lf\n%d", new->variable_num,
-           new->expression, new->initial_ap, new->t_ep, new->it_num);
+    fscanf(stdin, "%d\n%s\n%lf\n%lf\n%d", &new->variable_num,
+           new->expression, &new->initial_ap, &new->t_ep, &new->it_num);
 
     new->evaluator = evaluator_create(new->expression);
     if (!new->evaluator)
