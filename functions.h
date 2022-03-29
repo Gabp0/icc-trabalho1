@@ -8,6 +8,7 @@
 typedef struct function
 {
     char *expression;  // string com a expressao da funcao
+    char **names;      // vetor com os nomes das variaveis
     void *evaluator;   // libmath evaluator
     int variable_num;  // numero de variaveis
     double *initial_aps; // aproximacao inicial
