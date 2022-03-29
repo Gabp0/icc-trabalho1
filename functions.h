@@ -2,8 +2,7 @@
 #define __FUNC__
 
 #define EXPRESSION_MAX_SIZE 1000
-
-#include <matheval.h>
+#define FILE_NAME_MAX_SIZE 256
 
 typedef struct function
 {
@@ -12,8 +11,8 @@ typedef struct function
     void *evaluator;   // libmath evaluator
     int variable_num;  // numero de variaveis
     double *initial_aps; // aproximacao inicial
-    double t_ep;       // tolerancia epsilon
-    int it_num;        // numero maximo de iteracoes
+    double t_ep;         // tolerancia epsilon
+    int it_num;          // numero maximo de iteracoes
 } FUNCTION;
 
 char *getArgs(int argc, char **argv);
