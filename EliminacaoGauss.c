@@ -73,7 +73,7 @@ double **solveHessian(void ***H, double *X, int n)
     H_x[i] = malloc(sizeof(double));
   }
 
-  for (i = 0; i < n; i++)
+  for (int i = 0; i < n; i++)
   {
     for (int j = 0; j < n; j++)
     {
