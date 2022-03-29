@@ -27,28 +27,34 @@ char *getArgs(int argc, char **argv)
 
 FUNCTION *readFunction(void)
 {
-    FUNCTION *new = malloc(sizeof(FUNCTION));
-    if (!new)
+    FUNCTION *function = malloc(sizeof(FUNCTION));
+    if (!function)
     {
         perror("Falha ao alocar memória para as funções.");
         exit(EXIT_FAILURE);
     }
-    new->expression = malloc(sizeof(char) * EXPRESSION_MAX_SIZE);
-    if (!new->expression)
+    function->expression = malloc(sizeof(char) * EXPRESSION_MAX_SIZE);
+    if (!function->expression)
     {
         perror("Falha ao alocar memória para as funções.");
         exit(EXIT_FAILURE);
     }
 
-    fscanf(stdin, "%d\n%s\n%lf\n%lf\n%d", &new->variable_num,
-           new->expression, &new->initial_ap, &new->t_ep, &new->it_num);
+    fscanf(stdin, "%d\n%s\n", &function->variable_num, function->expression);
 
-    new->evaluator = evaluator_create(new->expression);
-    if (!new->evaluator)
+    function->initial_aps = malloc(sizeof(double)*function->variable_num);
+
+    for(int i = 0;i < function->variable_num; i++)
+        fscanf(stdin, "%lf", &function->initial_aps[i]);
+
+    fscanf(stdin, "%lf\n%d", &function->t_ep, &function->it_num);
+
+    function->evaluator = evaluator_create(function->expression);
+    if (!function->evaluator)
     {
         perror("Falha ao criar o avalidor para o libmatheval");
         exit(EXIT_FAILURE);
     }
 
-    return new;
+    return function;
 }

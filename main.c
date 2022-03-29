@@ -4,21 +4,23 @@
 
 int main(int argc, char **argv)
 {
-    char *output = getArgs(argc, argv);
-<<<<<<< HEAD
+    //char *output = getArgs(argc, argv);
     FUNCTION *input_func;
 
     do
     {
         input_func = readFunction();
         printf("%s\n", input_func->expression);
+
+        //Free da function
+        free(input_func->initial_aps);
+        free(input_func);
     } while (getc(stdin) != EOF);
-=======
-    printf("%s\n", output);
+    //printf("%s\n", output);
 
     // cabeçalho
     printf("Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
-
+    /*
     // para cada iteração
     for (...)
     {
@@ -41,5 +43,5 @@ int main(int argc, char **argv)
     printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e\n", TtotalEG, TtotalLU, TtotalGS);
     printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e\n", TderivadasEG, TderivadasLU, TderivadasGS);
     printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e\n", TslEG, TslLU, TslGS);
->>>>>>> refs/remotes/origin/main
+    */
 }
