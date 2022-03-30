@@ -5,7 +5,7 @@
 
 int main(int argc, char **argv)
 {
-    char *output = getArgs(argc, argv);
+    // char *output = getArgs(argc, argv);
     FUNCTION *input_func;
 
     do
@@ -13,7 +13,7 @@ int main(int argc, char **argv)
         input_func = readFunction();
         printf("%s\n", input_func->expression);
         NewtonPadrao(input_func);
-        //Free da function
+        // Free da function
         free(input_func->initial_aps);
         free(input_func);
     } while (getc(stdin) != EOF);

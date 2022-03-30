@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <matheval.h>
 
 char *getArgs(int argc, char **argv)
 {
@@ -44,12 +45,13 @@ FUNCTION *readFunction(void)
 
     fscanf(stdin, "%d\n%s\n", &function->variable_num, function->expression);
 
-    function->initial_aps = malloc(sizeof(double)*function->variable_num);
-    function->names = malloc(sizeof(char**)*function->variable_num);
+    function->initial_aps = malloc(sizeof(double) * function->variable_num);
+    function->names = malloc(sizeof(char **) * function->variable_num);
 
-    for(int i = 0;i < function->variable_num; i++){
-        namePointer = malloc(sizeof(char)*5);
-        snprintf(namePointer, sizeof(char)*5, "x%d",i+1);
+    for (int i = 0; i < function->variable_num; i++)
+    {
+        namePointer = malloc(sizeof(char) * 5);
+        snprintf(namePointer, sizeof(char) * 5, "x%d", i + 1);
         function->names[i] = namePointer;
         fscanf(stdin, "%lf", &function->initial_aps[i]);
     }
