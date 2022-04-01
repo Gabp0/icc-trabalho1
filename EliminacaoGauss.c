@@ -65,18 +65,19 @@ void hessianGaussElimination(double **H_x, double *X, double *g_f, int n)
   _retrossubs(H_x, X, g_f, n);
 }
 
-double **solveHessian(void ***H, double *X, int n)
-{
-  double **H_x = malloc(sizeof(double *));
-  for (int i = 0; i < n; i++)
-  {
-    H_x[i] = malloc(sizeof(double));
-  }
+// double **solveHessian(void ***H, double *X, int n)
+// {
+//   double **H_x = malloc(sizeof(double *));
+//   for (int i = 0; i < n; i++)
+//   {
+//     H_x[i] = malloc(sizeof(double));
+//   }
 
-  for (int i = 0; i < n; i++)
-  {
-    for (int j = 0; j < n; j++)
-    {
-        }
-  }
-}
+//   for (int i = 0; i < n; i++)
+//   {
+//     for (int j = 0; j < n; j++)
+//     {
+//       evaluator_evaluate(H[i][j], 1, "x", )
+//     }
+//   }
+// }

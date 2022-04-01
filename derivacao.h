@@ -3,22 +3,23 @@
 
 #include "functions.h"
 
-typedef struct
+typedef struct newton
 {
-    void **hessiana;
-    void **gradiente;
-    double *H_x;
-    double *G_f;
-    double *X_i;
-    int n;
-    int it_num;
+    void ***hessiana; // matriz de equacoes da hessiana
+    double **H_x;     // matriz de resultados da hessiana
+    void **gradiente; // vetor de equacoes do gradiente
+    double *G_f;      // vetor de resultados do gradiente
+    double *X_i;      // vetor de solucoes do polinomio
+    int n;            // numero de variaveis
+    int k;            // numero de iteracoes utilizadas pelo metodo
     double *aprox_newtonP;
     double eps;
     double *delta;
-} SOLUCAO;
+} NEWTON;
 
-SOLUCAO *initSolucao(FUNCTION *func);
+NEWTON *initNewton(FUNCTION *func);
 void Gradiente(FUNCTION *func, void **grad);
-void Hessiana(FUNCTION *func, void **grad, void **hessi);
+void Hessiana(FUNCTION *func, void **grad, void ***hessi);
+void printMethod(NEWTON *newt);
 
 #endif
