@@ -65,6 +65,12 @@ void hessianGaussElimination(double **H_x, double *X, double *g_f, int n)
   _retrossubs(H_x, X, g_f, n);
 }
 
+void hessianGaussEliminationLU(double **H_x, double *X, double *g_f, int n)
+{
+  _triang(H_x, X, g_f, n);
+  _retrossubs(H_x, X, g_f, n);
+}
+
 // double **solveHessian(void ***H, double *X, int n)
 // {
 //   double **H_x = malloc(sizeof(double *));

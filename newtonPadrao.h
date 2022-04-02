@@ -8,7 +8,5 @@
 #include <matheval.h>
 
 NEWTON *NewtonPadrao(FUNCTION *func);
-void Gradiente(FUNCTION *func, void **grad);
-void Hessiana(FUNCTION *func, void **grad, void ***hessi);
 
 #endif

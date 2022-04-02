@@ -15,11 +15,14 @@ typedef struct newton
     double *aprox_newtonP;
     double eps;
     double *delta;
+    double timeFull;
+    double timeDer;
+    double timeSL;
 } NEWTON;
 
 NEWTON *initNewton(FUNCTION *func);
 void Gradiente(FUNCTION *func, void **grad);
 void Hessiana(FUNCTION *func, void **grad, void ***hessi);
-void printMethod(NEWTON *newt);
+void printMethod(NEWTON *newtP, NEWTON *newtM);
 
 #endif

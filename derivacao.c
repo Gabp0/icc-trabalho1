@@ -32,7 +32,10 @@ NEWTON *initNewton(FUNCTION *func)
     new->X_i = _copyDoubleArray(func->initial_aps, func->variable_num);
     new->n = func->variable_num;
     new->k = 0;
-    new->aprox_newtonP = malloc(sizeof(double) * func->it_num);
+    new->aprox_newtonP = calloc(sizeof(double), func->it_num);
+    new->timeDer = 0;
+    new->timeFull = 0;
+    new->timeSL = 0;
 
     return new;
 }
@@ -57,30 +60,34 @@ void Hessiana(FUNCTION *func, void **grad, void ***hessi)
     }
 }
 
-void printMethod(NEWTON *newt)
+int max(int a, int b)
+{
+    return a > b ? a : b;
+}
+
+void printMethod(NEWTON *newtP, NEWTON *newtM)
 {
     // cabeçalho
-    printf("Iteração \t\t| Newton Padrão \t\t| Newton Modificado \t\t| Newton Inexato");
-    // para cada iteração
-    for (int i = 0; i < newt->k; i++)
+    printf("Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
+    int z = max(newtP->k, newtM->k);
+    for (int i = 0; i < z; i++)
     {
-        printf("\n%d \t\t\t\t| ", i); // imprime iteração
+        printf("%d \t\t| ", i); // imprime iteração
 
-        if (newt->aprox_newtonP[i])
-        { // se nesta iteração o valor da primeira coluna existe, imprime
-            if (isnan(newt->aprox_newtonP[i]) || isinf(newt->aprox_newtonP[i]))
-                printf("%1.14e\t\t\t| ", newt->aprox_newtonP[i]);
-            else
-                printf("%1.14e\t| ", newt->aprox_newtonP[i]);
-        }
+        if (newtP->k > i)
+            printf("%1.14e\t| ", newtP->aprox_newtonP[i]);
         else
             printf("\t\t\t| ");
+        if (newtM->k > i)
+            printf("%1.14e\t| \n", newtM->aprox_newtonP[i]);
+        else
+            printf("\t\t\t| \n");
 
         // repete para as outras duas colunas...
     }
 
     // imprimir os tempos
-    // printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e\n", TtotalEG, TtotalLU, TtotalGS);
-    // printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e\n", TderivadasEG, TderivadasLU, TderivadasGS);
-    // printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e\n", TslEG, TslLU, TslGS);
+    printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e\n", newtP->timeFull, newtM->timeFull, newtM->timeFull);
+    printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e\n", newtP->timeDer, newtM->timeDer, newtM->timeFull);
+    printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e\n", newtP->timeSL, newtM->timeSL, newtM->timeFull);
 }
