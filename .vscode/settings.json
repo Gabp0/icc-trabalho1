@@ -1,11 +1,15 @@
 {
     "files.associations": {
-        "*.tcc": "c",
-        "string_view": "c",
-        "algorithm": "c",
-        "random": "c",
-        "limits": "c",
-        "numeric": "c",
-        "ranges": "c"
+      "matheval.h": "c",
+      "newtonpadrao.h": "c",
+      "string.h": "c",
+      "utils.h": "c",
+      "time.h": "c",
+      "gaussianelimination.h": "c",
+      "array": "c",
+      "string_view": "c",
+      "initializer_list": "c",
+      "utility": "c"
     }
-}
+  }
+  

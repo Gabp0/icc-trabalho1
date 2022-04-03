@@ -1,13 +1,24 @@
 #ifndef __NEWTONMODIFICADO__
 #define __NEWTONMODIFICADO__
 
+#include "functions.h"
+#include "luDecomposition.h"
+
 #define EXPRESSION_MAX_SIZE 1000
 #define HESS_STEPS 5
 
-#include "derivacao.h"
-#include "functions.h"
-#include <matheval.h>
+typedef struct newton_modificado
+{
+    void ***hessiana;     // matriz de equacoes da hessiana
+    void **gradiente;     // vetor de equacoes do gradiente
+    LINEAR_SYST_LU *syst; // sistema linear H'(X_i) * delta = - Gf(X_i)
+    double *X_i;          // vetor de solucoes do polinomio
+    int n;                // numero de variaveis
+    double *aprox_newtonP;
+    double eps;
+} NEWTON_M;
 
-NEWTON *NewtonModificado(FUNCTION *func);
+void NewtonModificado(FUNCTION *func);
+NEWTON_M *initNewtonM(FUNCTION *func);
 
 #endif

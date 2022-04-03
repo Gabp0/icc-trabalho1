@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "matheval.h": "c",
+    "newtonpadrao.h": "c"
+  }
+}

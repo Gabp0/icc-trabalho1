@@ -5,8 +5,7 @@ CFLAGS = --std=c99 -Wall
 CPPFLAGS = -I/usr/local/include 
 LDFLAGS = -L/usr/local/lib 
 LDLIBS = -lm -lmatheval
-objects = main.o functions.o newtonPadrao.o derivacao.o EliminacaoGauss.o newtonModificado.o utils.o
-#newtonIndexado.o 
+objects = main.o gaussianElimination.o luDecomposition.o functions.o utils.o newtonPadrao.o newtonModificado.o
 
 # default
 all: newtonPC
@@ -16,13 +15,13 @@ newtonPC: $(objects)
 	$(CC) -o newtonPC $(objects) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(LDLIBS)
 
 # compilacao
-main.o: main.c functions.h
-functions.o: functions.c functions.h	
-derivacao.o: derivacao.c derivacao.h functions.h
-EliminacaoGauss.o: EliminacaoGauss.c EliminacaoGauss.h
-#newtonIndexado.o: newtonIndexado.c newtonIndexado.h
-newtonModificado.o: newtonModificado.c newtonModificado.h
-newtonPadrao.o: newtonPadrao.c newtonPadrao.h
+main.o: main.c utils.h newtonPadrao.h newtonModificado.h
+functions.o: functions.c functions.h utils.h
+gaussianElimination.o: gaussianElimination.c gaussianElimination.h utils.h 
+luDecomposition.o: luDecomposition.c luDecomposition.h utils.h
+#newtonInexato.o: newtonInexato.c newtonInexato.h
+newtonModificado.o: newtonModificado.c newtonModificado.h luDecomposition.h utils.h functions.h
+newtonPadrao.o: newtonPadrao.c newtonPadrao.h gaussianElimination.h utils.h functions.h
 utils.o: utils.c utils.h
 
 # remove tudo que nao for codigo fonte

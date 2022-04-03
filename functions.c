@@ -2,28 +2,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+#include "utils.h"
 #include <matheval.h>
 
-char *getArgs(int argc, char **argv)
+N_RESULT *_initNR(void)
 {
-    if (argc > 3)
-    {
-        fprintf(stderr, "Número de argumentos inválidos.\n");
-        exit(EXIT_FAILURE);
-    }
+    N_RESULT *new = malloc(sizeof(N_RESULT));
+    if (!new)
+        exitStatus(MEM_ALOC);
 
-    if (!strcmp(argv[1], "-o"))
-    {
-        if (!access(argv[2], F_OK))
-            return argv[2];
-        else
-        {
-            fprintf(stderr, "Arquivo %s não encontrado.\n", argv[2]);
-            exit(EXIT_FAILURE);
-        }
-    }
-    return "stdout";
+    new->it_num = 0;
+    new->timeDer = 0.0;
+    new->timeSL = 0.0;
+    new->timeFull = 0.0;
+
+    return new;
 }
 
 FUNCTION *readFunction(void)
@@ -32,38 +25,80 @@ FUNCTION *readFunction(void)
     char *namePointer;
 
     if (!function)
-    {
-        perror("Falha ao alocar memória para as funções.");
-        exit(EXIT_FAILURE);
-    }
+        exitStatus(MEM_ALOC);
     function->expression = malloc(sizeof(char) * EXPRESSION_MAX_SIZE);
     if (!function->expression)
-    {
-        perror("Falha ao alocar memória para as funções.");
-        exit(EXIT_FAILURE);
-    }
+        exitStatus(MEM_ALOC);
 
-    fscanf(stdin, "%d\n%s\n", &function->variable_num, function->expression);
+    fscanf(stdin, "%d\n%s\n", &function->var_num, function->expression);
 
-    function->initial_aps = malloc(sizeof(double) * function->variable_num);
-    function->names = malloc(sizeof(char **) * function->variable_num);
+    function->initial_aps = malloc(sizeof(double) * function->var_num);
+    function->names = malloc(sizeof(char **) * function->var_num);
+    if ((!function->initial_aps) || (!function->names))
+        exitStatus(MEM_ALOC);
 
-    for (int i = 0; i < function->variable_num; i++)
+    for (int i = 0; i < function->var_num; i++)
     {
         namePointer = malloc(sizeof(char) * 5);
+        if (!namePointer)
+            exitStatus(MEM_ALOC);
         snprintf(namePointer, sizeof(char) * 5, "x%d", i + 1);
         function->names[i] = namePointer;
         fscanf(stdin, "%lf", &function->initial_aps[i]);
+        // free(namePointer);
     }
 
     fscanf(stdin, "%lf\n%d", &function->t_ep, &function->it_num);
 
     function->evaluator = evaluator_create(function->expression);
     if (!function->evaluator)
-    {
-        perror("Falha ao criar o avalidor para o libmatheval");
-        exit(EXIT_FAILURE);
-    }
+        exitStatus(MATHEVAL_ERR);
+
+    function->n_p = _initNR();
+    function->n_m = _initNR();
+    function->n_i = _initNR();
 
     return function;
+}
+
+void Hessiana(FUNCTION *func, void **grad, void ***hessi)
+{
+    for (int i = 0; i < func->var_num; i++)
+        for (int j = 0; j < func->var_num; j++)
+            hessi[i][j] = evaluator_derivative(grad[i], func->names[j]);
+}
+
+void Gradiente(FUNCTION *func, void **grad)
+{
+    for (int i = 0; i < func->var_num; i++)
+        grad[i] = evaluator_derivative(func->evaluator, func->names[i]);
+}
+
+void printMethod(FUNCTION *func)
+{
+    // cabeçalho
+    printf("Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
+    int z = max(func->n_p->it_num, func->n_m->it_num);
+    // int z = func->n_p->it_num;
+    for (int i = 0; i < z; i++)
+    {
+        printf("%d \t\t| ", i); // imprime iteração
+
+        if (func->n_p->it_num > i)
+            printf("%1.14e\t| ", func->n_p->f_k[i]);
+        else
+            printf("\t\t\t| ");
+
+        if (func->n_m->it_num > i)
+            printf("%1.14e\t| \n", func->n_m->f_k[i]);
+        else
+            printf("\t\t\t| \n");
+
+        // repete para as outras duas colunas...
+    }
+
+    // imprimir os tempos
+    printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeFull, func->n_m->timeFull, func->n_p->timeFull);
+    printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeDer, func->n_m->timeDer, func->n_p->timeFull);
+    printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeSL, func->n_m->timeSL, func->n_p->timeFull);
 }
