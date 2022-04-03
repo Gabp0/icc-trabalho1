@@ -39,14 +39,6 @@ void NewtonModificado(FUNCTION *func)
 
     for (int k = 0; k < func->it_num; k++) // testa numero de iteracoes
     {
-        for (int i = 0; i < func->var_num; i++)
-            prnVetorDouble(nm->syst->L[i], func->var_num);
-        fprintf(stderr, "L\n");
-
-        for (int i = 0; i < func->var_num; i++)
-            prnVetorDouble(nm->syst->U[i], func->var_num);
-        fprintf(stderr, "U\n");
-
         func->n_m->it_num++; // numero de iteracoes utilizadas no metodo
 
         nm->aprox_newtonP[k] = evaluator_evaluate(func->evaluator, func->var_num, func->names, nm->X_i); // f(X_i)
@@ -63,11 +55,7 @@ void NewtonModificado(FUNCTION *func)
         {
             for (int i = 0; i < func->var_num; i++)
                 for (int j = 0; j < func->var_num; j++) // calcula a hessiana de X_i apenas a cada HESS_STEPS
-                    nm->syst->L[i][j] = evaluator_evaluate(nm->hessiana[i][j], func->var_num, func->names, nm->X_i);
-
-            for (int i = 0; i < func->var_num; i++)
-                prnVetorDouble(nm->syst->L[i], func->var_num);
-            fprintf(stderr, "L before fact\n");
+                    nm->syst->U[i][j] = evaluator_evaluate(nm->hessiana[i][j], func->var_num, func->names, nm->X_i);
 
             factorize(nm->syst); // separa a matriz H_x no sistema linear com LU
         }
@@ -82,6 +70,7 @@ void NewtonModificado(FUNCTION *func)
             nm->X_i[i] += nm->syst->X[i];   // calcula X_i+1
             soma += pow(nm->syst->X[i], 2); // calcula || delta ||
         }
+
         if (sqrt(soma) < __DBL_EPSILON__) // testa || delta_i || < eps
             break;
     }

@@ -1,6 +1,11 @@
 #ifndef __LU_DEC__
 #define __LU_DEC__
 
+typedef struct indexes
+{
+    int ia;
+    int ib;
+} INDEXES;
 typedef struct linear_syst_lu
 // struct para representacao de um sistema linear
 {
@@ -9,7 +14,9 @@ typedef struct linear_syst_lu
     double *X;  // vetor das variaveis
     double *Y;  // Ly = b
     double *b;  // vetor do resultado
-    int size;   // tamanho
+    INDEXES *swap_index;
+    int swaps;
+    int size; // tamanho
 } LINEAR_SYST_LU;
 
 LINEAR_SYST_LU *initLSLU(int size);

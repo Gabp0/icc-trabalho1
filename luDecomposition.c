@@ -45,60 +45,78 @@ LINEAR_SYST_LU *initLSLU(int size)
     if (!new->Y)
         exitStatus(MEM_ALOC);
 
+    new->swaps = 0;
+
     return new;
 }
 
-// void _pivot(LINEAR_SYST_LU *syst)
-// {
-//     double max = fabs(H_x[i][i]);
-//     int max_i = i;
-//     for (int j = i + 1; j < n; ++j)
-//     {
-//         double v = fabs(H_x[j][i]);
-//         if (v > max)
-//         {
-//             max = v;
-//             max_i = j;
-//         }
-//     }
-//     if (max_i != i)
-//     {
-//         double *tmp = H_x[i];
-//         H_x[i] = H_x[max_i];
-//         H_x[max_i] = tmp;
+void _swapBLines(LINEAR_SYST_LU *syst)
+{
+    double aux;
 
-//         double aux = g_f[i];
-//         g_f[i] = g_f[max_i];
-//         g_f[max_i] = aux;
-//     }
-// }
+    for (int i = 0; i < syst->swaps; i++)
+    {
+        aux = syst->b[syst->swap_index[i].ia];
+        syst->b[syst->swap_index[i].ia] = syst->b[syst->swap_index[i].ib];
+        syst->b[syst->swap_index[i].ib] = aux;
+    }
+}
+
+void _pivotLU(LINEAR_SYST_LU *syst, int i)
+{
+    double max = fabs(syst->U[i][i]);
+    int max_i = i;
+    for (int j = i + 1; j < syst->size; ++j)
+    {
+        double v = fabs(syst->U[j][i]);
+        if (v > max)
+        {
+            max = v;
+            max_i = j;
+        }
+    }
+    if (max_i != i)
+    {
+        double *tmp = syst->U[i];
+        syst->U[i] = syst->U[max_i];
+        syst->U[max_i] = tmp;
+
+        syst->swap_index = realloc(syst->swap_index, sizeof(INDEXES) * syst->swaps + 1);
+        syst->swap_index[syst->swaps].ia = i;
+        syst->swap_index[syst->swaps].ib = max_i;
+        syst->swaps++;
+    }
+}
 
 void factorize(LINEAR_SYST_LU *syst)
 {
+    syst->swaps = 0;
+    if (syst->swap_index)
+        free(syst->swap_index);
     for (int i = 0; i < syst->size; ++i)
     {
-        //_pivot(H_x, g_f, n, i);
-        syst->U[i][i] = 1.0;
+        _pivotLU(syst, i);
+        syst->L[i][i] = 1.0;
         for (int k = i + 1; k < syst->size; ++k)
         {
-            syst->U[k][i] = syst->L[k][i] / syst->L[i][i];
-            if (isnan(syst->U[k][i]))
-                printf("ERRO: %g\n", syst->L[i][i]);
-            syst->L[k][i] = 0.0;
+            syst->L[k][i] = syst->U[k][i] / syst->U[i][i];
+            if (isnan(syst->L[k][i]))
+                printf("ERRO: %g\n", syst->U[i][i]);
+            syst->U[k][i] = 0.0;
             for (int j = i + 1; j < syst->size; ++j)
-                syst->L[k][j] -= syst->L[i][j] * syst->U[k][i];
+                syst->U[k][j] -= syst->U[i][j] * syst->L[k][i];
         }
     }
 }
 
 void _subsLU(LINEAR_SYST_LU *syst)
 {
+    _swapBLines(syst);
     for (int i = 0; i < syst->size; ++i)
     {
         syst->Y[i] = syst->b[i];
-        for (int j = 0; j <= i; j++)
+        for (int j = 0; j < i; j++)
             syst->Y[i] -= syst->L[i][j] * syst->Y[j];
-        syst->Y[i] /= syst->L[i][i];
     }
 }
 
