@@ -89,13 +89,13 @@ void printMethod(FUNCTION *func, char *output)
     if (!output)
         output_file = stdout;
     else
-        output_file = fopen(output, "w");
+        output_file = fopen(output, "a");
 
     if (!output_file)
         exitStatus(FOPEN_ERR);
 
     // cabeçalho
-    fprintf(output_file, "%s\n", func->expression);
+    fprintf(output_file, "%d\n%s\n#\n", func->var_num, func->expression);
     fprintf(output_file, "Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
     int z = max(func->n_p->it_num, func->n_m->it_num);
     // int z = func->n_p->it_num;
@@ -119,9 +119,10 @@ void printMethod(FUNCTION *func, char *output)
     // imprimir os tempos
     fprintf(output_file, "Tempo total \t| %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeFull, func->n_m->timeFull, func->n_p->timeFull);
     fprintf(output_file, "Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeDer, func->n_m->timeDer, func->n_p->timeFull);
-    fprintf(output_file, "Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeSL, func->n_m->timeSL, func->n_p->timeFull);
+    fprintf(output_file, "Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e\n#\n\n", func->n_p->timeSL, func->n_m->timeSL, func->n_p->timeFull);
 
-    fclose(output_file);
+    if (output)
+        fclose(output_file);
 }
 
 void deleteFunction(FUNCTION *func)
