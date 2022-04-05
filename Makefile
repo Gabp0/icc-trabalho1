@@ -8,7 +8,7 @@ CFLAGS = --std=c99 -Wall
 CPPFLAGS = -I/usr/local/include 
 LDFLAGS = -L/usr/local/lib 
 LDLIBS = -lm -lmatheval
-objects = main.o gaussianElimination.o luDecomposition.o functions.o utils.o newtonPadrao.o newtonModificado.o newtonInexato.o
+objects = main.o gaussianElimination.o luDecomposition.o gaussSeidel.o functions.o utils.o newtonPadrao.o newtonModificado.o newtonInexato.o
 
 # default
 all: newtonPC
@@ -22,6 +22,7 @@ main.o: main.c utils.h newtonPadrao.h newtonModificado.h
 functions.o: functions.c functions.h utils.h
 gaussianElimination.o: gaussianElimination.c gaussianElimination.h utils.h 
 luDecomposition.o: luDecomposition.c luDecomposition.h utils.h
+gaussSeidel.o: gaussSeidel.c gaussSeidel.h utils.h
 newtonInexato.o: newtonInexato.c newtonInexato.h
 newtonModificado.o: newtonModificado.c newtonModificado.h luDecomposition.h utils.h functions.h
 newtonPadrao.o: newtonPadrao.c newtonPadrao.h gaussianElimination.h utils.h functions.h

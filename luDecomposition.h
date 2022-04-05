@@ -4,13 +4,15 @@
 #ifndef __LU_DEC__
 #define __LU_DEC__
 
+
 typedef struct indexes
 {
     int ia;
     int ib;
 } INDEXES;
-typedef struct linear_syst_lu
+
 // struct para representacao de um sistema linear
+typedef struct linear_syst_lu
 {
     double **L; // matriz de coeficientes fatorados L
     double **U; // matriz de coeficientes fatorados U

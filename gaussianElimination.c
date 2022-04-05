@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <matheval.h>
 #include "utils.h"
 
 LINEAR_SYST *initLS(int size)

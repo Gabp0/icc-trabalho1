@@ -11,7 +11,7 @@
 
 int main(int argc, char **argv)
 {
-    char *output = getArgs(argc, argv);
+    char *output = NULL;//getArgs(argc, argv);
     FUNCTION *input_func;
 
     do
@@ -20,6 +20,7 @@ int main(int argc, char **argv)
 
         NewtonPadrao(input_func);
         NewtonModificado(input_func);
+        NewtonInexato(input_func);
 
         printMethod(input_func, output);
         deleteFunction(input_func);

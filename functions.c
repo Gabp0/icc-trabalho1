@@ -65,7 +65,7 @@ FUNCTION *readFunction(void)
 
     function->n_p = _initNR();
     function->n_m = _initNR();
-    // function->n_i = _initNR();
+    function->n_i = _initNR();
 
     return function;
 }
@@ -109,20 +109,20 @@ void printMethod(FUNCTION *func, char *output)
             fprintf(output_file, "\t\t\t| ");
 
         if (func->n_m->it_num > i)
-            fprintf(output_file, "%1.14e\t| \n", func->n_m->f_k[i]);
+            printf("%1.14e\t| ", func->n_m->f_k[i]);
         else
-            fprintf(output_file, "\t\t\t| \n");
+            printf("\t\t\t| ");
 
-        // repete para as outras duas colunas...
+        if (func->n_m->it_num > i)
+            printf("%1.14e\t| \n", func->n_i->f_k[i]);
+        else
+            printf("\t\t\t| \n");
     }
 
     // imprimir os tempos
-    fprintf(output_file, "Tempo total \t| %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeFull, func->n_m->timeFull, func->n_p->timeFull);
-    fprintf(output_file, "Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeDer, func->n_m->timeDer, func->n_p->timeFull);
-    fprintf(output_file, "Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e\n#\n\n", func->n_p->timeSL, func->n_m->timeSL, func->n_p->timeFull);
-
-    if (output)
-        fclose(output_file);
+    printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeFull, func->n_m->timeFull, func->n_i->timeFull);
+    printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeDer, func->n_m->timeDer, func->n_i->timeFull);
+    printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeSL, func->n_m->timeSL, func->n_i->timeFull);
 }
 
 void deleteFunction(FUNCTION *func)
