@@ -1,3 +1,6 @@
+//Gabriel de Oliveira Pontarolo GRR20203895
+//Rodrigo Saviam Soffner GRR20205092
+
 #ifndef __LU_DEC__
 #define __LU_DEC__
 

@@ -1,3 +1,6 @@
+//Gabriel de Oliveira Pontarolo GRR20203895
+//Rodrigo Saviam Soffner GRR20205092
+
 #include "gaussianElimination.h"
 #include <stdio.h>
 #include <stdlib.h>

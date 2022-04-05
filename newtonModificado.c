@@ -1,3 +1,6 @@
+//Gabriel de Oliveira Pontarolo GRR20203895
+//Rodrigo Saviam Soffner GRR20205092
+
 #include "utils.h"
 #include "functions.h"
 #include "luDecomposition.h"

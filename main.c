@@ -1,7 +1,10 @@
+//Gabriel de Oliveira Pontarolo GRR20203895
+//Rodrigo Saviam Soffner GRR20205092
+
 #include "functions.h"
 #include "newtonPadrao.h"
 #include "newtonModificado.h"
-//#include "newtonInexato.h"
+#include "newtonInexato.h"
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
