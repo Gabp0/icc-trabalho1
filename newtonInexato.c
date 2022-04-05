@@ -1,5 +1,5 @@
-//Gabriel de Oliveira Pontarolo GRR20203895
-//Rodrigo Saviam Soffner GRR20205092
+// Gabriel de Oliveira Pontarolo GRR20203895
+// Rodrigo Saviam Soffner GRR20205092
 
 #include "newtonInexato.h"
 #include "utils.h"
@@ -37,7 +37,7 @@ void _deleteNewtonI(NEWTON_I *ni)
 
     free(ni->gradiente);
 
-    //deleteLS(ni->syst);
+    // deleteLS(ni->syst);
 
     for (int i = 0; i < ni->n; i++)
     {
@@ -63,10 +63,8 @@ void NewtonInexato(FUNCTION *func)
     Hessiana(func, ni->gradiente, ni->hessiana); // gera as funcoes da matriz hessiana
     func->n_i->timeDer += timestamp();
 
-    for (int k = 0; k < func->it_num; k++) // testa numero de iteracoes 
+    for (int k = 0; k <= func->it_num; k++) // testa numero de iteracoes
     {
-        func->n_i->it_num++; // numero de iteracoes utilizadas no metodo
-
         ni->aprox_newtonI[k] = evaluator_evaluate(func->evaluator, func->var_num, func->names, ni->X_i); // f(X_i)
 
         for (int i = 0; i < func->var_num; i++)                                                              // gradiente f(X_i)
@@ -79,14 +77,14 @@ void NewtonInexato(FUNCTION *func)
             break;
 
         for (int i = 0; i < func->var_num; i++) // calcula a hessiana de X_i
-            for (int j = 0; j < func->var_num; j++) 
+            for (int j = 0; j < func->var_num; j++)
                 ni->syst->A[i][j] = evaluator_evaluate(ni->hessiana[i][j], func->var_num, func->names, ni->X_i);
 
         for (int i = 0; i < func->var_num; i++)
             ni->syst->X[i] = 0;
 
         func->n_i->timeSL -= timestamp();
-        gaussSeidel(ni->syst);
+        gaussSeidel(ni->syst); // resolve o sistema linear
         func->n_i->timeSL += timestamp();
 
         soma = 0;
@@ -98,6 +96,8 @@ void NewtonInexato(FUNCTION *func)
 
         if (sqrt(soma) < __DBL_EPSILON__) // testa || delta_i || < eps2
             break;
+
+        func->n_i->it_num++; // numero de iteracoes utilizadas no metodo
     }
 
     func->n_i->f_k = copyDoubleArray(ni->aprox_newtonI, func->n_i->it_num);

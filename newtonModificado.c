@@ -1,5 +1,5 @@
-//Gabriel de Oliveira Pontarolo GRR20203895
-//Rodrigo Saviam Soffner GRR20205092
+// Gabriel de Oliveira Pontarolo GRR20203895
+// Rodrigo Saviam Soffner GRR20205092
 
 #include "utils.h"
 #include "functions.h"
@@ -63,10 +63,8 @@ void NewtonModificado(FUNCTION *func)
 
     soma += pow(nm->syst->X[0], 2);
 
-    for (int k = 0; k < func->it_num; k++) // testa numero de iteracoes
+    for (int k = 0; k <= func->it_num; k++) // testa numero de iteracoes
     {
-        func->n_m->it_num++; // numero de iteracoes utilizadas no metodo
-
         nm->aprox_newtonP[k] = evaluator_evaluate(func->evaluator, func->var_num, func->names, nm->X_i); // f(X_i)
 
         for (int i = 0; i < func->var_num; i++)                                                              // gradiente f(X_i)
@@ -99,6 +97,8 @@ void NewtonModificado(FUNCTION *func)
 
         if (sqrt(soma) < __DBL_EPSILON__) // testa || delta_i || < eps
             break;
+
+        func->n_m->it_num++; // numero de iteracoes utilizadas no metodo
     }
 
     func->n_m->f_k = copyDoubleArray(nm->aprox_newtonP, func->n_m->it_num);

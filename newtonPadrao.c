@@ -1,5 +1,5 @@
-//Gabriel de Oliveira Pontarolo GRR20203895
-//Rodrigo Saviam Soffner GRR20205092
+// Gabriel de Oliveira Pontarolo GRR20203895
+// Rodrigo Saviam Soffner GRR20205092
 
 #include "newtonPadrao.h"
 #include "utils.h"
@@ -63,10 +63,8 @@ void NewtonPadrao(FUNCTION *func)
     Hessiana(func, np->gradiente, np->hessiana); // gera as funcoes da matriz hessiana
     func->n_p->timeDer += timestamp();
 
-    for (int k = 0; k < func->it_num; k++) // testa numero de iteracoes // numero de iteracoes utilizadas no metodo
+    for (int k = 0; k <= func->it_num; k++) // testa numero de iteracoes // numero de iteracoes utilizadas no metodo
     {
-        func->n_p->it_num++;
-
         np->aprox_newtonP[k] = evaluator_evaluate(func->evaluator, func->var_num, func->names, np->X_i); // f(X_i)
 
         for (int i = 0; i < func->var_num; i++)                                                              // gradiente f(X_i)
@@ -94,6 +92,8 @@ void NewtonPadrao(FUNCTION *func)
 
         if (sqrt(soma) < __DBL_EPSILON__) // testa || delta_i || < eps2
             break;
+
+        func->n_p->it_num++; // numero de iteracoes utilizadas no metodo
     }
 
     func->n_p->f_k = copyDoubleArray(np->aprox_newtonP, func->n_p->it_num);

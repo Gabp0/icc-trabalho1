@@ -29,17 +29,43 @@ LINEAR_SYST_GS *initLSGS(int size)
     return new;
 }
 
+// escolher uma aproximação inicial xo = (xo1, …, xon)
+// faça k = 1.
+// enquanto k <= N faça:
+//   para i := (1, …, n):
+//     σ = 0.
+//     para j := (1, …, i-1):
+//       σ = σ + aij * xj
+//     fim para.
+//     para j := (i+1, …, n):
+//       σ = σ + aij * xoj
+//     fim para.
+//     xi = (bi - σ) / aii
+//   fim para.
+//   se ||x-xo|| <= TOL então:
+//     retorna x.
+//   fim se
+//   xo = x.
+//   k = k+1.
+// fim enquanto.
+// imprime mensagem "Número máximo de iterações excedido."
+
 void gaussSeidel(LINEAR_SYST_GS *syst)
 {
-    for (int k = 0; k < 50; k++)
+    double soma;
+    for (int k = 0; k < IT_MAX; k++) // numero de iteracoes
     {
-        double soma = 0;
+
         for (int i = 0; i < syst->size; i++)
         {
+            soma = 0;
             for (int j = 0; j < syst->size; j++)
                 if (i != j)
-                    soma = syst->A[i][j] * syst->X[i];
-            syst->X[i] = 1 / syst->A[i][i] * (syst->b[i] - soma);
+                    soma += syst->A[i][j] * syst->X[j];
+
+            syst->X[i] = (syst->b[i] - soma) / syst->A[i][i];
         }
+        if (fabs(syst->X[k] - syst->X[k - 1]) < TOL)
+            return;
     }
 }

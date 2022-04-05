@@ -1,8 +1,11 @@
-//Gabriel de Oliveira Pontarolo GRR20203895
-//Rodrigo Saviam Soffner GRR20205092
+// Gabriel de Oliveira Pontarolo GRR20203895
+// Rodrigo Saviam Soffner GRR20205092
 
 #ifndef __GAUSSSEILDEL__
 #define __GAUSSSEILDEL__
+
+#define IT_MAX 50
+#define TOL 0.000001
 
 typedef struct linear_syst_gs
 // struct para representacao de um sistema linear

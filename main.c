@@ -11,7 +11,7 @@
 
 int main(int argc, char **argv)
 {
-    char *output = NULL;//getArgs(argc, argv);
+    char *output = getArgs(argc, argv);
     FUNCTION *input_func;
 
     do
