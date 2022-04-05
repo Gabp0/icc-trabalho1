@@ -1,5 +1,5 @@
-//Gabriel de Oliveira Pontarolo GRR20203895
-//Rodrigo Saviam Soffner GRR20205092
+// Gabriel de Oliveira Pontarolo GRR20203895
+// Rodrigo Saviam Soffner GRR20205092
 
 #ifndef __FUNC__
 #define __FUNC__
@@ -33,7 +33,7 @@ typedef struct function
 FUNCTION *readFunction(void);
 void Gradiente(FUNCTION *func, void **grad);
 void Hessiana(FUNCTION *func, void **grad, void ***hessi);
-void printMethod(FUNCTION *func);
+void printMethod(FUNCTION *func, char *output);
 void deleteFunction(FUNCTION *func);
 
 #endif

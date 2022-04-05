@@ -1,5 +1,5 @@
-//Gabriel de Oliveira Pontarolo GRR20203895
-//Rodrigo Saviam Soffner GRR20205092
+// Gabriel de Oliveira Pontarolo GRR20203895
+// Rodrigo Saviam Soffner GRR20205092
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,6 +16,39 @@
 	<trecho de programa do qual se deseja medir tempo>
 	tempo = timestamp() - tempo;
 */
+
+void exitStatus(int code)
+{
+	switch (code)
+	{
+	case MEM_ALOC:
+		perror("Falha na alocação de memória");
+		exit(code);
+
+	case INV_POINTER:
+		perror("Ponteiro inválido");
+		exit(code);
+
+	case MATHEVAL_ERR:
+		perror("Erro ao gerar avaliador para a libmatheval");
+		exit(code);
+
+	case ARG_NUM:
+		perror("Número de argumentos na chamada do programa inválido");
+		exit(code);
+
+	case ARG_INV:
+		perror("Argumento inválido");
+		exit(code);
+
+	case FOPEN_ERR:
+		perror("Não foi possível abrir o arquivo");
+		exit(code);
+
+	default:
+		break;
+	}
+}
 
 double timestamp(void)
 {
@@ -72,43 +105,22 @@ double **initDoubleMatrix(int size)
 
 char *getArgs(int argc, char **argv)
 {
-	if ((argc > 3) || (argc == 2))
+	if (argc == 3)
 	{
-		fprintf(stderr, "Número de argumentos inválidos.\n");
-		exit(EXIT_FAILURE);
-	}
-
-	if (!strcmp(argv[1], "-o"))
-	{
-		if (!access(argv[2], F_OK))
+		if (!strcmp(argv[1], "-o"))
 			return argv[2];
+
 		else
-		{
-			fprintf(stderr, "Arquivo %s não encontrado.\n", argv[2]);
-			exit(EXIT_FAILURE);
-		}
+			exitStatus(ARG_INV);
 	}
-	return "stdout";
+	else if (argc == 1)
+		return NULL;
+
+	exitStatus(ARG_NUM);
+	return NULL;
 }
 
 int max(int a, int b)
 {
 	return a > b ? a : b;
-}
-
-void exitStatus(int code)
-{
-	switch (code)
-	{
-	case MEM_ALOC:
-		perror("Falha na alocação de memória");
-		exit(code);
-
-	case INV_POINTER:
-		perror("Ponteiro inválido");
-		exit(code);
-
-	default:
-		break;
-	}
 }

@@ -1,5 +1,5 @@
-//Gabriel de Oliveira Pontarolo GRR20203895
-//Rodrigo Saviam Soffner GRR20205092
+// Gabriel de Oliveira Pontarolo GRR20203895
+// Rodrigo Saviam Soffner GRR20205092
 
 #ifndef __UTILS__
 #define __UTILS__
@@ -10,6 +10,9 @@
 #define MEM_ALOC 101
 #define INV_POINTER 102
 #define MATHEVAL_ERR 103
+#define ARG_NUM 104
+#define ARG_INV 105
+#define FOPEN_ERR 106
 
 double timestamp(void);
 void prnVetorFloat(float *x, int n);

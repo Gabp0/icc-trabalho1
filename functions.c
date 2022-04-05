@@ -1,5 +1,5 @@
-//Gabriel de Oliveira Pontarolo GRR20203895
-//Rodrigo Saviam Soffner GRR20205092
+// Gabriel de Oliveira Pontarolo GRR20203895
+// Rodrigo Saviam Soffner GRR20205092
 
 #include "functions.h"
 #include <stdio.h>
@@ -83,34 +83,45 @@ void Gradiente(FUNCTION *func, void **grad)
         grad[i] = evaluator_derivative(func->evaluator, func->names[i]);
 }
 
-void printMethod(FUNCTION *func)
+void printMethod(FUNCTION *func, char *output)
 {
+    FILE *output_file;
+    if (!output)
+        output_file = stdout;
+    else
+        output_file = fopen(output, "w");
+
+    if (!output_file)
+        exitStatus(FOPEN_ERR);
+
     // cabeçalho
-    printf("%s\n", func->expression);
-    printf("Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
+    fprintf(output_file, "%s\n", func->expression);
+    fprintf(output_file, "Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
     int z = max(func->n_p->it_num, func->n_m->it_num);
     // int z = func->n_p->it_num;
     for (int i = 0; i < z; i++)
     {
-        printf("%d \t\t| ", i); // imprime iteração
+        fprintf(output_file, "%d \t\t| ", i); // imprime iteração
 
         if (func->n_p->it_num > i)
-            printf("%1.14e\t| ", func->n_p->f_k[i]);
+            fprintf(output_file, "%1.14e\t| ", func->n_p->f_k[i]);
         else
-            printf("\t\t\t| ");
+            fprintf(output_file, "\t\t\t| ");
 
         if (func->n_m->it_num > i)
-            printf("%1.14e\t| \n", func->n_m->f_k[i]);
+            fprintf(output_file, "%1.14e\t| \n", func->n_m->f_k[i]);
         else
-            printf("\t\t\t| \n");
+            fprintf(output_file, "\t\t\t| \n");
 
         // repete para as outras duas colunas...
     }
 
     // imprimir os tempos
-    printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeFull, func->n_m->timeFull, func->n_p->timeFull);
-    printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeDer, func->n_m->timeDer, func->n_p->timeFull);
-    printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeSL, func->n_m->timeSL, func->n_p->timeFull);
+    fprintf(output_file, "Tempo total \t| %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeFull, func->n_m->timeFull, func->n_p->timeFull);
+    fprintf(output_file, "Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeDer, func->n_m->timeDer, func->n_p->timeFull);
+    fprintf(output_file, "Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeSL, func->n_m->timeSL, func->n_p->timeFull);
+
+    fclose(output_file);
 }
 
 void deleteFunction(FUNCTION *func)

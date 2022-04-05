@@ -1,5 +1,5 @@
-//Gabriel de Oliveira Pontarolo GRR20203895
-//Rodrigo Saviam Soffner GRR20205092
+// Gabriel de Oliveira Pontarolo GRR20203895
+// Rodrigo Saviam Soffner GRR20205092
 
 #include "functions.h"
 #include "newtonPadrao.h"
@@ -11,7 +11,7 @@
 
 int main(int argc, char **argv)
 {
-    // char *output = getArgs(argc, argv);
+    char *output = getArgs(argc, argv);
     FUNCTION *input_func;
 
     do
@@ -21,7 +21,9 @@ int main(int argc, char **argv)
         NewtonPadrao(input_func);
         NewtonModificado(input_func);
 
-        printMethod(input_func);
+        printMethod(input_func, output);
         deleteFunction(input_func);
     } while (getc(stdin) != EOF);
+
+    return EXIT_SUCCESS;
 }
