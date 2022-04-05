@@ -21,7 +21,7 @@ LINEAR_SYST_LU *initLSLU(int size)
         exitStatus(MEM_ALOC);
     for (int i = 0; i < size; i++)
     {
-        new->L[i] = calloc(sizeof(double), size);
+        new->L[i] = malloc(sizeof(double) * size);
         if (!new->L[i])
             exitStatus(MEM_ALOC);
     }
@@ -31,12 +31,12 @@ LINEAR_SYST_LU *initLSLU(int size)
         exitStatus(MEM_ALOC);
     for (int i = 0; i < size; i++)
     {
-        new->U[i] = calloc(sizeof(double), size);
+        new->U[i] = malloc(sizeof(double) * size);
         if (!new->U[i])
             exitStatus(MEM_ALOC);
     }
 
-    new->b = calloc(sizeof(double), size);
+    new->b = malloc(sizeof(double) * size);
     if (!new->b)
         exitStatus(MEM_ALOC);
 
@@ -44,11 +44,12 @@ LINEAR_SYST_LU *initLSLU(int size)
     if (!new->X)
         exitStatus(MEM_ALOC);
 
-    new->Y = calloc(sizeof(double), size);
+    new->Y = malloc(sizeof(double) * size);
     if (!new->Y)
         exitStatus(MEM_ALOC);
 
     new->swaps = 0;
+    new->swap_index = malloc(sizeof(INDEXES) * size);
 
     return new;
 }
@@ -84,7 +85,6 @@ void _pivotLU(LINEAR_SYST_LU *syst, int i)
         syst->U[i] = syst->U[max_i];
         syst->U[max_i] = tmp;
 
-        syst->swap_index = realloc(syst->swap_index, sizeof(INDEXES) * syst->swaps + 1);
         syst->swap_index[syst->swaps].ia = i;
         syst->swap_index[syst->swaps].ib = max_i;
         syst->swaps++;
@@ -94,8 +94,6 @@ void _pivotLU(LINEAR_SYST_LU *syst, int i)
 void factorize(LINEAR_SYST_LU *syst)
 {
     syst->swaps = 0;
-    if (syst->swap_index)
-        free(syst->swap_index);
     for (int i = 0; i < syst->size; ++i)
     {
         _pivotLU(syst, i);
@@ -148,11 +146,13 @@ void deleteLSLU(LINEAR_SYST_LU *syst)
 
     for (int i = 0; i < syst->size; i++)
         free(syst->L[i]);
+    free(syst->L);
     for (int i = 0; i < syst->size; i++)
         free(syst->U[i]);
-    free(syst->L);
     free(syst->U);
     free(syst->b);
     free(syst->X);
+    free(syst->Y);
+    free(syst->swap_index);
     free(syst);
 }

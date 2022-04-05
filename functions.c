@@ -22,6 +22,12 @@ N_RESULT *_initNR(void)
     return new;
 }
 
+void _deleteResult(N_RESULT *result)
+{
+    free(result->f_k);
+    free(result);
+}
+
 FUNCTION *readFunction(void)
 {
     FUNCTION *function = malloc(sizeof(FUNCTION));
@@ -59,7 +65,7 @@ FUNCTION *readFunction(void)
 
     function->n_p = _initNR();
     function->n_m = _initNR();
-    function->n_i = _initNR();
+    // function->n_i = _initNR();
 
     return function;
 }
@@ -80,6 +86,7 @@ void Gradiente(FUNCTION *func, void **grad)
 void printMethod(FUNCTION *func)
 {
     // cabeçalho
+    printf("%s\n", func->expression);
     printf("Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
     int z = max(func->n_p->it_num, func->n_m->it_num);
     // int z = func->n_p->it_num;
@@ -104,4 +111,19 @@ void printMethod(FUNCTION *func)
     printf("Tempo total \t| %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeFull, func->n_m->timeFull, func->n_p->timeFull);
     printf("Tempo derivadas | %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeDer, func->n_m->timeDer, func->n_p->timeFull);
     printf("Tempo SL \t| %1.14e\t| %1.14e\t| %1.14e\n", func->n_p->timeSL, func->n_m->timeSL, func->n_p->timeFull);
+}
+
+void deleteFunction(FUNCTION *func)
+{
+    free(func->initial_aps);
+    for (int i = 0; i < func->var_num; i++)
+        free(func->names[i]);
+    free(func->names);
+
+    evaluator_destroy(func->evaluator);
+    free(func->expression);
+    //_deleteResult(func->n_i);
+    _deleteResult(func->n_m);
+    _deleteResult(func->n_p);
+    free(func);
 }

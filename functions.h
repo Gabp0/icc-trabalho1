@@ -34,5 +34,6 @@ FUNCTION *readFunction(void);
 void Gradiente(FUNCTION *func, void **grad);
 void Hessiana(FUNCTION *func, void **grad, void ***hessi);
 void printMethod(FUNCTION *func);
+void deleteFunction(FUNCTION *func);
 
 #endif

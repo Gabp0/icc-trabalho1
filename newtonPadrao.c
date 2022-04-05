@@ -28,8 +28,32 @@ NEWTON_P *initNewtonP(FUNCTION *func)
     return new;
 }
 
+void _deleteNewtonP(NEWTON_P *np)
+{
+    free(np->aprox_newtonP);
+
+    for (int i = 0; i < np->n; i++)
+        evaluator_destroy(np->gradiente[i]);
+
+    free(np->gradiente);
+
+    deleteLS(np->syst);
+
+    for (int i = 0; i < np->n; i++)
+    {
+        for (int j = 0; j < np->n; j++)
+            evaluator_destroy(np->hessiana[i][j]);
+        free(np->hessiana[i]);
+    }
+    free(np->hessiana);
+
+    free(np->X_i);
+    free(np);
+}
+
 void NewtonPadrao(FUNCTION *func)
 {
+    func->n_p->timeFull -= timestamp();
     double soma = 0;
 
     NEWTON_P *np = initNewtonP(func);
@@ -73,5 +97,6 @@ void NewtonPadrao(FUNCTION *func)
     }
 
     func->n_p->f_k = copyDoubleArray(np->aprox_newtonP, func->n_p->it_num);
-    // deleteNP(np);
+    _deleteNewtonP(np);
+    func->n_p->timeFull += timestamp();
 }

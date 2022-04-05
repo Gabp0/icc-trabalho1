@@ -72,7 +72,7 @@ double **initDoubleMatrix(int size)
 
 char *getArgs(int argc, char **argv)
 {
-	if (argc > 3)
+	if ((argc > 3) || (argc == 2))
 	{
 		fprintf(stderr, "Número de argumentos inválidos.\n");
 		exit(EXIT_FAILURE);
@@ -96,7 +96,7 @@ int max(int a, int b)
 	return a > b ? a : b;
 }
 
-void exitStatus(EXIT_CODE code)
+void exitStatus(int code)
 {
 	switch (code)
 	{

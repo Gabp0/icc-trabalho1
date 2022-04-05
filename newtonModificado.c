@@ -28,8 +28,31 @@ NEWTON_M *initNewtonM(FUNCTION *func)
     return new;
 }
 
+void _deleteNewtonM(NEWTON_M *nm)
+{
+    free(nm->aprox_newtonP);
+
+    for (int i = 0; i < nm->n; i++)
+        evaluator_destroy(nm->gradiente[i]);
+    free(nm->gradiente);
+
+    deleteLSLU(nm->syst);
+
+    for (int i = 0; i < nm->n; i++)
+    {
+        for (int j = 0; j < nm->n; j++)
+            evaluator_destroy(nm->hessiana[i][j]);
+        free(nm->hessiana[i]);
+    }
+    free(nm->hessiana);
+
+    free(nm->X_i);
+    free(nm);
+}
+
 void NewtonModificado(FUNCTION *func)
 {
+    func->n_m->timeFull -= timestamp();
     double soma = 0;
     NEWTON_M *nm = initNewtonM(func);
 
@@ -79,4 +102,6 @@ void NewtonModificado(FUNCTION *func)
     }
 
     func->n_m->f_k = copyDoubleArray(nm->aprox_newtonP, func->n_m->it_num);
+    _deleteNewtonM(nm);
+    func->n_m->timeFull += timestamp();
 }

@@ -7,12 +7,9 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-typedef enum
-{
-    MEM_ALOC,
-    INV_POINTER,
-    MATHEVAL_ERR
-} EXIT_CODE;
+#define MEM_ALOC 101
+#define INV_POINTER 102
+#define MATHEVAL_ERR 103
 
 double timestamp(void);
 void prnVetorFloat(float *x, int n);
@@ -22,6 +19,6 @@ double *copyDoubleArray(double *a, int size);
 int max(int a, int b);
 char *getArgs(int argc, char **argv);
 double **initDoubleMatrix(int size);
-void exitStatus(EXIT_CODE code);
+void exitStatus(int code);
 
 #endif
