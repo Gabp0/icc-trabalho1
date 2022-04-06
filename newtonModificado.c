@@ -1,5 +1,6 @@
 // Gabriel de Oliveira Pontarolo GRR20203895
 // Rodrigo Saviam Soffner GRR20205092
+// Implementacoes das funcoes da biblioteca newtonModificado.h
 
 #include "utils.h"
 #include "functions.h"
@@ -10,7 +11,8 @@
 #include <math.h>
 #include <matheval.h>
 
-NEWTON_M *initNewtonM(FUNCTION *func)
+NEWTON_M *_initNewtonM(FUNCTION *func)
+// aloca memoria para a struct NEWTOM_M
 {
     NEWTON_M *new = malloc(sizeof(NEWTON_M));
 
@@ -29,6 +31,7 @@ NEWTON_M *initNewtonM(FUNCTION *func)
 }
 
 void _deleteNewtonM(NEWTON_M *nm)
+// libera memoria utilizada pela struct _nm_
 {
     free(nm->aprox_newtonM);
 
@@ -51,10 +54,11 @@ void _deleteNewtonM(NEWTON_M *nm)
 }
 
 void NewtonModificado(FUNCTION *func)
+// encontra as raizes da funcao _func_ utilizando o metodo de newon modificado
 {
     func->n_m->timeFull -= timestamp();
     double soma = 0;
-    NEWTON_M *nm = initNewtonM(func);
+    NEWTON_M *nm = _initNewtonM(func);
 
     func->n_m->timeDer -= timestamp();
     Gradiente(func, nm->gradiente);              // gera as funcoes do vetor gradiente
@@ -63,17 +67,17 @@ void NewtonModificado(FUNCTION *func)
 
     soma += pow(nm->syst->X[0], 2);
 
-    for (int k = 0; k < func->it_num; k++) // testa numero de iteracoes
+    for (int k = 0; k <= func->it_num; k++) // testa numero de iteracoes
     {
         nm->aprox_newtonM[k] = evaluator_evaluate(func->evaluator, func->var_num, func->names, nm->X_i); // f(X_i)
 
         for (int i = 0; i < func->var_num; i++)                                                              // gradiente f(X_i)
             nm->syst->b[i] = evaluator_evaluate(nm->gradiente[i], func->var_num, func->names, nm->X_i) * -1; // oposto resultado do gradiente para o calculo do sistema linear
 
+        func->n_m->it_num++; // numero de iteracoes utilizadas no metodo
+
         if (norma(nm->syst->b, func->var_num) < func->t_ep) // testa || gradiente de f(X_i) || < eps
             break;
-
-        func->n_m->it_num++; // numero de iteracoes utilizadas no metodo
 
         if ((k % func->var_num) == 0)
         {
@@ -85,7 +89,7 @@ void NewtonModificado(FUNCTION *func)
         }
 
         func->n_m->timeSL -= timestamp();
-        solveLU(nm->syst); // resolve o sistema linear
+        solveLU(nm->syst); // resolve o sistema linear utilizando fatoracao LU
         func->n_m->timeSL += timestamp();
 
         soma = 0;
@@ -93,10 +97,13 @@ void NewtonModificado(FUNCTION *func)
             nm->X_i[i] += nm->syst->X[i]; // calcula X_i+1
 
         if (norma(nm->X_i, func->var_num) < __DBL_EPSILON__) // testa || delta_i || < eps
+        {
+            func->n_m->it_num++;
             break;
+        }
     }
 
-    func->n_m->f_k = copyDoubleArray(nm->aprox_newtonM, func->n_m->it_num);
+    func->n_m->f_k = copyDoubleArray(nm->aprox_newtonM, func->n_m->it_num); // resultado do sistema
     _deleteNewtonM(nm);
     func->n_m->timeFull += timestamp();
 }

@@ -1,5 +1,6 @@
 // Gabriel de Oliveira Pontarolo GRR20203895
 // Rodrigo Saviam Soffner GRR20205092
+// Implementacoes das funcoes da biblioteca newtonPadrao.h
 
 #include "newtonPadrao.h"
 #include "utils.h"
@@ -11,6 +12,7 @@
 #include <matheval.h>
 
 NEWTON_P *initNewtonP(FUNCTION *func)
+// aloca memoria para a struct NEWTON_P
 {
     NEWTON_P *new = malloc(sizeof(NEWTON_P));
 
@@ -29,6 +31,7 @@ NEWTON_P *initNewtonP(FUNCTION *func)
 }
 
 void _deleteNewtonP(NEWTON_P *np)
+// libera memoria utilizada pela struct _np_
 {
     free(np->aprox_newtonP);
 
@@ -52,6 +55,7 @@ void _deleteNewtonP(NEWTON_P *np)
 }
 
 void NewtonPadrao(FUNCTION *func)
+// encontra as raizes da funcao _func_ utilizando o metodo de newton padrao
 {
     func->n_p->timeFull -= timestamp();
 
@@ -62,35 +66,37 @@ void NewtonPadrao(FUNCTION *func)
     Hessiana(func, np->gradiente, np->hessiana); // gera as funcoes da matriz hessiana
     func->n_p->timeDer += timestamp();
 
-    for (int k = 0; k < func->it_num; k++) // testa numero de iteracoes
+    for (int k = 0; k <= func->it_num; k++) // testa numero de iteracoes
     {
-
         np->aprox_newtonP[k] = evaluator_evaluate(func->evaluator, func->var_num, func->names, np->X_i); // f(X_i)
 
         for (int i = 0; i < func->var_num; i++)                                                              // gradiente f(X_i)
             np->syst->b[i] = evaluator_evaluate(np->gradiente[i], func->var_num, func->names, np->X_i) * -1; // oposto resultado do gradiente para o calculo do sistema linear
 
+        func->n_p->it_num++; // numero de iteracoes utilizadas no metodo
+
         if (norma(np->syst->b, func->var_num) < func->t_ep) // testa || gradiente de f(X_i) || < eps
             break;
-
-        func->n_p->it_num++; // numero de iteracoes utilizadas no metodo
 
         for (int i = 0; i < func->var_num; i++)
             for (int j = 0; j < func->var_num; j++) // calcula a hessiana de X_i
                 np->syst->A[i][j] = evaluator_evaluate(np->hessiana[i][j], func->var_num, func->names, np->X_i);
 
         func->n_p->timeSL -= timestamp();
-        gaussianElimination(np->syst); // resolve o sistema linear
+        gaussianElimination(np->syst); // resolve o sistema linear utilizando a eliminacao de guass
         func->n_p->timeSL += timestamp();
 
         for (int i = 0; i < func->var_num; i++)
             np->X_i[i] += np->syst->X[i]; // calcula X_i+1
 
         if (norma(np->X_i, func->var_num) < __DBL_EPSILON__) // testa || delta_i || < eps2
+        {
+            func->n_p->it_num++;
             break;
+        }
     }
 
-    func->n_p->f_k = copyDoubleArray(np->aprox_newtonP, func->n_p->it_num);
+    func->n_p->f_k = copyDoubleArray(np->aprox_newtonP, func->n_p->it_num); // resultados do sistema linear
     _deleteNewtonP(np);
     func->n_p->timeFull += timestamp();
 }

@@ -33,10 +33,10 @@ typedef struct function
     N_RESULT *n_i;       // resultado do metodo newton inexato
 } FUNCTION;
 
-FUNCTION *readFunction(void); // Le a funcao matematica da entrada padrao, armazena em uma struct do tipo FUNCTION e retorna o ponteiro para ela
-void Gradiente(FUNCTION *func, void **grad);
-void Hessiana(FUNCTION *func, void **grad, void ***hessi);
-void printMethod(FUNCTION *func, char *output);
-void deleteFunction(FUNCTION *func);
+FUNCTION *readFunction(void);                              // Le a funcao matematica da entrada padrao, armazena em uma struct do tipo FUNCTION e retorna o ponteiro para ela
+void Gradiente(FUNCTION *func, void **grad);               // Gera o vetor gradiente para a função _func_ usando a lib matheval e retorna no ponteiro _grad_
+void Hessiana(FUNCTION *func, void **grad, void ***hessi); // Gera a matriz gradiente para a função _func_ usando a lib matheval e retorna no ponteiro _hessi_
+void printMethod(FUNCTION *func, char *output);            // Imprime os três metodos de newton na saida especificada _output_ e os tempos utilizados em cada um
+void deleteFunction(FUNCTION *func);                       // Libera a memória utilizada pela struct FUNCTION
 
 #endif

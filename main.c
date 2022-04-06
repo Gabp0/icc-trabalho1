@@ -29,6 +29,5 @@ int main(int argc, char **argv)
 
         deleteFunction(input_func); // libera memoria
     } while (getc(stdin) != EOF);
-
     return EXIT_SUCCESS;
 }

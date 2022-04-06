@@ -1,6 +1,6 @@
 // Gabriel de Oliveira Pontarolo GRR20203895
 // Rodrigo Saviam Soffner GRR20205092
-// Biblioteca utilizada para entrada e saida de funcoes matemematicas
+// Implementacoes das funcoes da biblioteca functions.h
 
 #include "functions.h"
 #include <stdio.h>
@@ -43,7 +43,14 @@ FUNCTION *readFunction(void)
     if (!function->expression)
         exitStatus(MEM_ALOC);
 
-    fscanf(stdin, "%d\n%s\n", &function->var_num, function->expression); // le quantidade de var e a expressao
+    function->var_num = 0;
+
+    function->expression[0] = '0';
+    fscanf(stdin, "%d\n", &function->var_num);
+    fscanf(stdin, "%s\n", function->expression); // le quantidade de var e a expressao
+    // fprintf(stdout, "%s\n", function->expression);
+    if (function->var_num == 0)
+        exit(EXIT_SUCCESS);
 
     function->initial_aps = malloc(sizeof(double) * function->var_num);
     function->names = malloc(sizeof(char **) * function->var_num);
@@ -102,7 +109,7 @@ void printMethod(FUNCTION *func, char *output)
         exitStatus(FOPEN_ERR);
 
     // cabeçalho
-    fprintf(output_file, "%d\n%s\n#\n", func->var_num, func->expression);
+    fprintf(output_file, "%d\n%s\n#", func->var_num, func->expression);
     fprintf(output_file, "Iteração \t| Newton Padrão \t| Newton Modificado \t| Newton Inexato\n");
 
     int z = max(func->n_p->it_num, func->n_m->it_num, func->n_i->it_num); // encontra o metodo com o maior numero de iteracoes

@@ -1,5 +1,6 @@
 // Gabriel de Oliveira Pontarolo GRR20203895
 // Rodrigo Saviam Soffner GRR20205092
+// Implementacao das funcoes da biblioteca newtonInexato.h
 
 #include "newtonInexato.h"
 #include "utils.h"
@@ -10,7 +11,8 @@
 #include <math.h>
 #include <matheval.h>
 
-NEWTON_I *initNewtonI(FUNCTION *func)
+NEWTON_I *_initNewtonI(FUNCTION *func)
+// aloca memoria para a struct usada pelo metodo de newton inexato
 {
     NEWTON_I *new = malloc(sizeof(NEWTON_I));
 
@@ -29,6 +31,7 @@ NEWTON_I *initNewtonI(FUNCTION *func)
 }
 
 void _deleteNewtonI(NEWTON_I *ni)
+// libera memoria utilizada pela struct do newton inexato
 {
     free(ni->aprox_newtonI);
 
@@ -52,24 +55,25 @@ void _deleteNewtonI(NEWTON_I *ni)
 }
 
 void NewtonInexato(FUNCTION *func)
+// encontra as raizes da funcao utilizando o metodo de newton inexato
 {
     func->n_i->timeFull -= timestamp();
 
-    NEWTON_I *ni = initNewtonI(func);
+    NEWTON_I *ni = _initNewtonI(func);
 
     func->n_i->timeDer -= timestamp();
     Gradiente(func, ni->gradiente);              // gera as funcoes do vetor gradiente
     Hessiana(func, ni->gradiente, ni->hessiana); // gera as funcoes da matriz hessiana
     func->n_i->timeDer += timestamp();
 
-    for (int k = 0; k < func->it_num; k++) // testa numero de iteracoes
+    for (int k = 0; k <= func->it_num; k++) // testa numero de iteracoes
     {
-        func->n_i->it_num++; // numero de iteracoes utilizadas no metodo
-
         ni->aprox_newtonI[k] = evaluator_evaluate(func->evaluator, func->var_num, func->names, ni->X_i); // f(X_i)
 
         for (int i = 0; i < func->var_num; i++)                                                              // gradiente f(X_i)
             ni->syst->b[i] = evaluator_evaluate(ni->gradiente[i], func->var_num, func->names, ni->X_i) * -1; // oposto resultado do gradiente para o calculo do sistema linear
+
+        func->n_i->it_num++; // numero de iteracoes utilizadas no metodo
 
         if (norma(ni->syst->b, func->var_num) < func->t_ep) // testa || gradiente de f(X_i) || < eps
             break;
@@ -82,17 +86,20 @@ void NewtonInexato(FUNCTION *func)
             ni->syst->X[i] = 0;
 
         func->n_i->timeSL -= timestamp();
-        gaussSeidel(ni->syst); // resolve o sistema linear
+        gaussSeidel(ni->syst); // resolve o sistema linear utilizando gauss-seidel
         func->n_i->timeSL += timestamp();
 
         for (int i = 0; i < func->var_num; i++)
             ni->X_i[i] += ni->syst->X[i]; // calcula X_i+1
 
         if (norma(ni->X_i, func->var_num) < __DBL_EPSILON__) // testa || delta_i || < eps2
+        {
+            func->n_i->it_num++;
             break;
+        }
     }
 
-    func->n_i->f_k = copyDoubleArray(ni->aprox_newtonI, func->n_i->it_num);
+    func->n_i->f_k = copyDoubleArray(ni->aprox_newtonI, func->n_i->it_num); // resultado do sistema
     _deleteNewtonI(ni);
     func->n_i->timeFull += timestamp();
 }

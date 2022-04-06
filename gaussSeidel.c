@@ -1,5 +1,6 @@
 // Gabriel de Oliveira Pontarolo GRR20203895
 // Rodrigo Saviam Soffner GRR20205092
+// Implementacao das funcoes da biblioteca gaussSeidel.h
 
 #include "utils.h"
 #include <stdio.h>
@@ -26,15 +27,17 @@ LINEAR_SYST_GS *initLSGS(int size)
     if (!new->X)
         exitStatus(MEM_ALOC);
 
+    new->Xk_m1 = malloc(sizeof(double) * size);
+    if (!new->Xk_m1)
+        exitStatus(MEM_ALOC);
+
     return new;
 }
 
 void gaussSeidel(LINEAR_SYST_GS *syst)
+// resolve o sistema linear utilizando o metodo de Gauss-Seidel
 {
     double soma;
-    double *xk_m1 = malloc(sizeof(double) * syst->size);
-    if (!xk_m1)
-        exitStatus(MEM_ALOC);
 
     for (int k = 0; k < IT_MAX; k++) // numero de iteracoes
     {
@@ -47,18 +50,21 @@ void gaussSeidel(LINEAR_SYST_GS *syst)
                 if (i != j)
                     soma += syst->A[i][j] * syst->X[j];
             }
-            xk_m1[i] = syst->X[i];
+            syst->Xk_m1[i] = syst->X[i]; // guarda x[k - 1]
             syst->X[i] = (syst->b[i] - soma) / syst->A[i][i];
+            if (!isValidNum(syst->X[i]))
+                exitStatus(ZERO_DIV);
         }
         if (k > 0)
-            if (fabs(norma(syst->X, syst->size) - norma(xk_m1, syst->size)) < TOL)
+            if (fabs(norma(syst->X, syst->size) - norma(syst->Xk_m1, syst->size)) < TOL)
                 break;
     }
-    free(xk_m1);
+
     return;
 }
 
 void deleteLSGS(LINEAR_SYST_GS *syst)
+// libera memoria utilizada pelo sistema linear _syst_
 {
     if (!syst)
         exitStatus(INV_POINTER);
@@ -68,5 +74,6 @@ void deleteLSGS(LINEAR_SYST_GS *syst)
     free(syst->A);
     free(syst->b);
     free(syst->X);
+    free(syst->Xk_m1);
     free(syst);
 }
