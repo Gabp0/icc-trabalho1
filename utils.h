@@ -19,9 +19,10 @@ void prnVetorFloat(float *x, int n);
 void prnVetorDouble(double *x, int n);
 void prnVetorLongDouble(long double *x, int n);
 double *copyDoubleArray(double *a, int size);
-int max(int a, int b);
+int max(int a, int b, int c);
 char *getArgs(int argc, char **argv);
 double **initDoubleMatrix(int size);
 void exitStatus(int code);
+double norma(double *array, int size);
 
 #endif

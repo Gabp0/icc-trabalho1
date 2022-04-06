@@ -23,14 +23,14 @@ NEWTON_M *initNewtonM(FUNCTION *func)
     new->syst = initLSLU(func->var_num);
     new->X_i = copyDoubleArray(func->initial_aps, func->var_num);
     new->n = func->var_num;
-    new->aprox_newtonP = calloc(sizeof(double), func->it_num);
+    new->aprox_newtonM = calloc(sizeof(double), func->it_num);
 
     return new;
 }
 
 void _deleteNewtonM(NEWTON_M *nm)
 {
-    free(nm->aprox_newtonP);
+    free(nm->aprox_newtonM);
 
     for (int i = 0; i < nm->n; i++)
         evaluator_destroy(nm->gradiente[i]);
@@ -63,17 +63,17 @@ void NewtonModificado(FUNCTION *func)
 
     soma += pow(nm->syst->X[0], 2);
 
-    for (int k = 0; k <= func->it_num; k++) // testa numero de iteracoes
+    for (int k = 0; k < func->it_num; k++) // testa numero de iteracoes
     {
-        nm->aprox_newtonP[k] = evaluator_evaluate(func->evaluator, func->var_num, func->names, nm->X_i); // f(X_i)
+        nm->aprox_newtonM[k] = evaluator_evaluate(func->evaluator, func->var_num, func->names, nm->X_i); // f(X_i)
 
         for (int i = 0; i < func->var_num; i++)                                                              // gradiente f(X_i)
             nm->syst->b[i] = evaluator_evaluate(nm->gradiente[i], func->var_num, func->names, nm->X_i) * -1; // oposto resultado do gradiente para o calculo do sistema linear
 
-        for (int i = 0; i < func->var_num; i++)
-            soma += pow(nm->syst->b[i], 2);
-        if (sqrt(soma) < func->t_ep) // testa || gradiente de f(X_i) || < eps
+        if (norma(nm->syst->b, func->var_num) < func->t_ep) // testa || gradiente de f(X_i) || < eps
             break;
+
+        func->n_m->it_num++; // numero de iteracoes utilizadas no metodo
 
         if ((k % func->var_num) == 0)
         {
@@ -90,18 +90,13 @@ void NewtonModificado(FUNCTION *func)
 
         soma = 0;
         for (int i = 0; i < func->var_num; i++)
-        {
-            nm->X_i[i] += nm->syst->X[i];   // calcula X_i+1
-            soma += pow(nm->syst->X[i], 2); // calcula || delta ||
-        }
+            nm->X_i[i] += nm->syst->X[i]; // calcula X_i+1
 
-        if (sqrt(soma) < __DBL_EPSILON__) // testa || delta_i || < eps
+        if (norma(nm->X_i, func->var_num) < __DBL_EPSILON__) // testa || delta_i || < eps
             break;
-
-        func->n_m->it_num++; // numero de iteracoes utilizadas no metodo
     }
 
-    func->n_m->f_k = copyDoubleArray(nm->aprox_newtonP, func->n_m->it_num);
+    func->n_m->f_k = copyDoubleArray(nm->aprox_newtonM, func->n_m->it_num);
     _deleteNewtonM(nm);
     func->n_m->timeFull += timestamp();
 }

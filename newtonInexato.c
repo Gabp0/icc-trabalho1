@@ -37,7 +37,7 @@ void _deleteNewtonI(NEWTON_I *ni)
 
     free(ni->gradiente);
 
-    // deleteLS(ni->syst);
+    deleteLSGS(ni->syst);
 
     for (int i = 0; i < ni->n; i++)
     {
@@ -54,7 +54,6 @@ void _deleteNewtonI(NEWTON_I *ni)
 void NewtonInexato(FUNCTION *func)
 {
     func->n_i->timeFull -= timestamp();
-    double soma = 0;
 
     NEWTON_I *ni = initNewtonI(func);
 
@@ -63,17 +62,16 @@ void NewtonInexato(FUNCTION *func)
     Hessiana(func, ni->gradiente, ni->hessiana); // gera as funcoes da matriz hessiana
     func->n_i->timeDer += timestamp();
 
-    for (int k = 0; k <= func->it_num; k++) // testa numero de iteracoes
+    for (int k = 0; k < func->it_num; k++) // testa numero de iteracoes
     {
+        func->n_i->it_num++; // numero de iteracoes utilizadas no metodo
+
         ni->aprox_newtonI[k] = evaluator_evaluate(func->evaluator, func->var_num, func->names, ni->X_i); // f(X_i)
 
         for (int i = 0; i < func->var_num; i++)                                                              // gradiente f(X_i)
             ni->syst->b[i] = evaluator_evaluate(ni->gradiente[i], func->var_num, func->names, ni->X_i) * -1; // oposto resultado do gradiente para o calculo do sistema linear
 
-        for (int i = 0; i < func->var_num; i++)
-            soma += pow(ni->syst->b[i], 2);
-
-        if (sqrt(soma) < func->t_ep) // testa || gradiente de f(X_i) || < eps
+        if (norma(ni->syst->b, func->var_num) < func->t_ep) // testa || gradiente de f(X_i) || < eps
             break;
 
         for (int i = 0; i < func->var_num; i++) // calcula a hessiana de X_i
@@ -87,17 +85,11 @@ void NewtonInexato(FUNCTION *func)
         gaussSeidel(ni->syst); // resolve o sistema linear
         func->n_i->timeSL += timestamp();
 
-        soma = 0;
         for (int i = 0; i < func->var_num; i++)
-        {
-            ni->X_i[i] += ni->syst->X[i];   // calcula X_i+1
-            soma += pow(ni->syst->X[i], 2); // calcula || delta ||
-        }
+            ni->X_i[i] += ni->syst->X[i]; // calcula X_i+1
 
-        if (sqrt(soma) < __DBL_EPSILON__) // testa || delta_i || < eps2
+        if (norma(ni->X_i, func->var_num) < __DBL_EPSILON__) // testa || delta_i || < eps2
             break;
-
-        func->n_i->it_num++; // numero de iteracoes utilizadas no metodo
     }
 
     func->n_i->f_k = copyDoubleArray(ni->aprox_newtonI, func->n_i->it_num);

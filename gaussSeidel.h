@@ -18,5 +18,6 @@ typedef struct linear_syst_gs
 
 void gaussSeidel(LINEAR_SYST_GS *syst);
 LINEAR_SYST_GS *initLSGS(int size);
+void deleteLSGS(LINEAR_SYST_GS *syst);
 
 #endif

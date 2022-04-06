@@ -29,30 +29,13 @@ LINEAR_SYST_GS *initLSGS(int size)
     return new;
 }
 
-// escolher uma aproximação inicial xo = (xo1, …, xon)
-// faça k = 1.
-// enquanto k <= N faça:
-//   para i := (1, …, n):
-//     σ = 0.
-//     para j := (1, …, i-1):
-//       σ = σ + aij * xj
-//     fim para.
-//     para j := (i+1, …, n):
-//       σ = σ + aij * xoj
-//     fim para.
-//     xi = (bi - σ) / aii
-//   fim para.
-//   se ||x-xo|| <= TOL então:
-//     retorna x.
-//   fim se
-//   xo = x.
-//   k = k+1.
-// fim enquanto.
-// imprime mensagem "Número máximo de iterações excedido."
-
 void gaussSeidel(LINEAR_SYST_GS *syst)
 {
     double soma;
+    double *xk_m1 = malloc(sizeof(double) * syst->size);
+    if (!xk_m1)
+        exitStatus(MEM_ALOC);
+
     for (int k = 0; k < IT_MAX; k++) // numero de iteracoes
     {
 
@@ -60,12 +43,30 @@ void gaussSeidel(LINEAR_SYST_GS *syst)
         {
             soma = 0;
             for (int j = 0; j < syst->size; j++)
+            {
                 if (i != j)
                     soma += syst->A[i][j] * syst->X[j];
-
+            }
+            xk_m1[i] = syst->X[i];
             syst->X[i] = (syst->b[i] - soma) / syst->A[i][i];
         }
-        if (fabs(syst->X[k] - syst->X[k - 1]) < TOL)
-            return;
+        if (k > 0)
+            if (fabs(norma(syst->X, syst->size) - norma(xk_m1, syst->size)) < TOL)
+                break;
     }
+    free(xk_m1);
+    return;
+}
+
+void deleteLSGS(LINEAR_SYST_GS *syst)
+{
+    if (!syst)
+        exitStatus(INV_POINTER);
+
+    for (int i = 0; i < syst->size; i++)
+        free(syst->A[i]);
+    free(syst->A);
+    free(syst->b);
+    free(syst->X);
+    free(syst);
 }

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <math.h>
 #include "utils.h"
 
 /*  Retorna tempo em milisegundos
@@ -120,7 +121,16 @@ char *getArgs(int argc, char **argv)
 	return NULL;
 }
 
-int max(int a, int b)
+int max(int a, int b, int c)
 {
-	return a > b ? a : b;
+	int aux = a > b ? a : b;
+	return aux > c ? aux : c;
+}
+
+double norma(double *array, int size)
+{
+	double soma = 0;
+	for (int i = 0; i < size; i++)
+		soma = array[i] * array[i];
+	return sqrt(soma);
 }

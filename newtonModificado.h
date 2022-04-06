@@ -1,5 +1,5 @@
-//Gabriel de Oliveira Pontarolo GRR20203895
-//Rodrigo Saviam Soffner GRR20205092
+// Gabriel de Oliveira Pontarolo GRR20203895
+// Rodrigo Saviam Soffner GRR20205092
 
 #ifndef __NEWTONMODIFICADO__
 #define __NEWTONMODIFICADO__
@@ -17,7 +17,7 @@ typedef struct newton_modificado
     LINEAR_SYST_LU *syst; // sistema linear H'(X_i) * delta = - Gf(X_i)
     double *X_i;          // vetor de solucoes do polinomio
     int n;                // numero de variaveis
-    double *aprox_newtonP;
+    double *aprox_newtonM;
     double eps;
 } NEWTON_M;
 
