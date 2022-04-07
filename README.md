@@ -62,7 +62,7 @@ assim como a escrita dos resultados dos métodos com a função *"void printMeth
   As três variações do método de newton utilizados para calcular o sistema linear gerado pela Hessiana e Gradiente da respectiva expressão matemática. O resultado dos três é armazenado em seu respectivo ponteiro para a struct N_RESULT pela biblioteca ["functions.h"](#functionsh) o que inclui o número de iterações necessárias pelo método, o valor de f de cada iteração e os tempos gastos.
 ### Newton Padrao
   Implementado na biblioteca "newtonPadrao.h", utiliza o método da [eliminação de Gauss](#guassianeliminationh) para a resolução do sistema linear.
-### Newton Inexato
-  Implementado na biblioteca "newtonModificado.h", utiliza o método da [Fatoração LU](#ludecompositionh) para a resolução do sistema linear.
 ### Newton Modificado
-  Implementado na biblioteca "newtonIterativo.h", utiliza o método iterativo de [Gauss-Seidel](#gaussseidelh) para a resolução do sistema linear.
+  Implementado na biblioteca "newtonModificado.h", utiliza o método da [Fatoração LU](#ludecompositionh) para a resolução do sistema linear.
+### Newton Inexato
+  Implementado na biblioteca "newtonInexato.h", utiliza o método iterativo de [Gauss-Seidel](#gaussseidelh) para a resolução do sistema linear.
