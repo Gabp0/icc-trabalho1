@@ -1,4 +1,4 @@
-# **Introdução a Computação Científica - Trabalho 1
+# **Introdução a Computação Científica - Trabalho 1**
 
 ## Autores:
 
